@@ -12,12 +12,10 @@ func main() {
 
 	//var plainText = "Jorge es una perrisima"
 	var passphrase = "Utm.Pwd-53cr3t.5t4k!_3mpTy*"
-	//
-	//encryptedData := utm_crypto.AESEncrypt(plainText, []byte(passphrase))
-	//encryptedString := base64.StdEncoding.EncodeToString(encryptedData)
-	//fmt.Println(encryptedString)
-
 	encryptedData := "IwwuELM1KR2WWvV+zOXZ5sBjAb5mjezXGErleHqGcHM="
-	decryptedText, _ := utm_crypto.Decrypt(encryptedData, passphrase)
+	decryptedText, err := utm_crypto.Decrypt(encryptedData, passphrase)
+	if err != nil {
+		fmt.Println(err)
+	}
 	fmt.Println(string(decryptedText))
 }
