@@ -15,6 +15,7 @@ type ConfigurationGroup struct {
 	Name           string          `json:"name"`
 	Description    string          `json:"description"`
 	Configurations []Configuration `json:"configurations"`
+	Active         bool            `json:"active"`
 }
 
 type ConfigurationSection struct {
