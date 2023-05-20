@@ -7,10 +7,10 @@ import (
 )
 
 func main() {
-	client := UTMStackConfigurationClient.NewUTMClient("ksjkasdkads", "172.18.25.6")
-	config, err := client.GetUTMConfig("master", enum.AWS_BEANSTALK)
+	client := UTMStackConfigurationClient.NewUTMClient("90415H8um7Q3V7pOnpGZQQWDw2gimoUO", "qa.utmstack.com")
+	config, err := client.GetUTMConfig(1, enum.O365)
 	if err != nil {
-		return
+		fmt.Sprintf("Error s%", err.Error())
 	}
 	fmt.Println(config)
 }

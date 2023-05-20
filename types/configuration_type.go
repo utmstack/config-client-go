@@ -2,25 +2,36 @@ package types
 
 import "github.com/AtlasInsideCorp/UTMStackConfigurationClient/enum"
 
-type Configuration struct {
-	Key         string                 `json:"key"`
-	Value       string                 `json:"value"`
-	Name        string                 `json:"name"`
-	Description string                 `json:"description"`
-	DataType    enum.UTMConfigDataType `json:"dataType"`
-	Required    bool                   `json:"required"`
-}
-
-type ConfigurationGroup struct {
-	Name           string          `json:"name"`
-	Description    string          `json:"description"`
-	Configurations []Configuration `json:"configurations"`
-	Active         bool            `json:"active"`
-}
-
 type ConfigurationSection struct {
-	ServerName          string               `json:"serverName"`
-	Module              enum.UTMModule       `json:"module"`
-	Active              bool                 `json:"active"`
-	ConfigurationGroups []ConfigurationGroup `json:"configurationGroups"`
+	ID                  int           `json:"id"`
+	ServerID            int           `json:"serverId"`
+	PrettyName          string        `json:"prettyName"`
+	ModuleName          string        `json:"moduleName"`
+	ModuleDescription   string        `json:"moduleDescription"`
+	ModuleActive        bool          `json:"moduleActive"`
+	ModuleIcon          string        `json:"moduleIcon"`
+	ModuleCategory      string        `json:"moduleCategory"`
+	LiteVersion         bool          `json:"liteVersion"`
+	NeedsRestart        bool          `json:"needsRestart"`
+	ConfigurationGroups []ModuleGroup `json:"moduleGroups"`
+	Activatable         bool          `json:"activatable"`
+}
+
+type ModuleGroup struct {
+	ID               int             `json:"id"`
+	ModuleID         int             `json:"moduleId"`
+	GroupName        string          `json:"groupName"`
+	GroupDescription string          `json:"groupDescription"`
+	Configurations   []Configuration `json:"moduleGroupConfigurations"`
+}
+
+type Configuration struct {
+	ID              int                    `json:"id"`
+	GroupID         int                    `json:"groupId"`
+	ConfKey         string                 `json:"confKey"`
+	ConfValue       string                 `json:"confValue"`
+	ConfName        string                 `json:"confName"`
+	ConfDescription string                 `json:"confDescription"`
+	ConfDataType    enum.UTMConfigDataType `json:"confDataType"`
+	ConfRequired    bool                   `json:"confRequired"`
 }

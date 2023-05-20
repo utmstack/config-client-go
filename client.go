@@ -2,11 +2,13 @@ package UTMStackConfigurationClient
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"github.com/AtlasInsideCorp/AtlasInsideAES"
 	"github.com/AtlasInsideCorp/UTMStackConfigurationClient/enum"
 	"github.com/AtlasInsideCorp/UTMStackConfigurationClient/types"
+	"github.com/AtlasInsideCorp/UTMStackConfigurationClient/util"
 	"io/ioutil"
 	"net/http"
 	"sync"
@@ -15,9 +17,6 @@ import (
 var (
 	passphrase = "Utm.Pwd-53cr3t.5t4k!_3mpTy*"
 )
-
-const RegisterConfigURL string = "https://%s/utm-modules/registerConfiguration"
-const GetConfigURL string = "https://%s/module-group-configurations/getConfiguration?serverName=%s&module=%s"
 
 type UTMConfigClient struct {
 	ConnectionKey  string `json:"connectionKey"`
@@ -49,7 +48,8 @@ func NewUTMClient(connectionKey, masterLocation string) *UTMConfigClient {
 }
 
 func (s *UTMConfigClient) doRequest(req *http.Request) ([]byte, error) {
-	req.Header.Set("UTM-Token", s.ConnectionKey)
+	req.Header.Set(util.UTMInternalKeyHeaderName, s.ConnectionKey)
+	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -67,7 +67,7 @@ func (s *UTMConfigClient) doRequest(req *http.Request) ([]byte, error) {
 }
 
 func (s *UTMConfigClient) CreateUTMConfig(config *types.ConfigurationSection) error {
-	url := fmt.Sprintf(RegisterConfigURL, s.MasterLocation)
+	url := fmt.Sprintf(util.RegisterConfigURL, s.MasterLocation)
 	fmt.Println(url)
 	config = encryptDecryptConfValues(config, "decrypt")
 	j, err := json.Marshal(config)
@@ -85,33 +85,33 @@ func (s *UTMConfigClient) CreateUTMConfig(config *types.ConfigurationSection) er
 	return err
 }
 
-func (s *UTMConfigClient) GetUTMConfig(serverName string, module enum.UTMModule) (*types.ConfigurationSection, error) {
-	url := fmt.Sprintf(GetConfigURL, s.MasterLocation, serverName, module)
+func (s *UTMConfigClient) GetUTMConfig(serverId int, module enum.UTMModule) (*types.ConfigurationSection, error) {
+	url := fmt.Sprintf(util.GetConfigURL, s.MasterLocation, serverId, module)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
-	bytes, err := s.doRequest(req)
+	response, err := s.doRequest(req)
 	if err != nil {
 		return nil, err
 	}
 	var data types.ConfigurationSection
-	err = json.Unmarshal(bytes, &data)
+	err = json.Unmarshal(response, &data)
 	if err != nil {
 		return nil, err
 	}
-	dat := encryptDecryptConfValues(&data, "encrypt")
+	dat := encryptDecryptConfValues(&data, "decrypt")
 	return dat, nil
 }
 
 func encryptDecryptConfValues(utmConfig *types.ConfigurationSection, action string) *types.ConfigurationSection {
 	for _, confGroup := range utmConfig.ConfigurationGroups {
 		for _, conf := range confGroup.Configurations {
-			if conf.Value != "" && conf.DataType == enum.PasswordType {
+			if conf.ConfValue != "" && conf.ConfDataType == enum.PasswordType {
 				if action != "encrypt" {
-					conf.Value, _ = AtlasInsideAES.AESDecrypt(conf.Value, []byte(passphrase))
+					conf.ConfValue, _ = AtlasInsideAES.AESDecrypt(conf.ConfValue, []byte(passphrase))
 				} else {
-					conf.Value, _ = AtlasInsideAES.AESEncrypt(conf.Value, []byte(passphrase))
+					conf.ConfValue, _ = AtlasInsideAES.AESEncrypt(conf.ConfValue, []byte(passphrase))
 				}
 			}
 		}
