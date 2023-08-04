@@ -4,11 +4,14 @@ import (
 	"fmt"
 	"github.com/AtlasInsideCorp/UTMStackConfigurationClient"
 	"github.com/AtlasInsideCorp/UTMStackConfigurationClient/enum"
+	"os"
 )
 
 func main() {
-	client := UTMStackConfigurationClient.NewUTMClient("EliHR1ZjPsaVdwg4CNI0X7c5QmCLOaJR", "192.168.1.59")
-	config, err := client.GetUTMConfig(enum.O365)
+	confKey := os.Getenv("INTERNAL_KEY")
+	utmPanel := os.Getenv("BACKEND_HOST")
+	client := UTMStackConfigurationClient.NewUTMClient(confKey, utmPanel)
+	config, err := client.GetUTMConfig(enum.BITDEFENDER)
 	if err != nil {
 		fmt.Sprintf("Error s%", err.Error())
 	}
