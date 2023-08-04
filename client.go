@@ -5,17 +5,12 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
-	"github.com/AtlasInsideCorp/AtlasInsideAES"
 	"github.com/AtlasInsideCorp/UTMStackConfigurationClient/enum"
 	"github.com/AtlasInsideCorp/UTMStackConfigurationClient/types"
 	"github.com/AtlasInsideCorp/UTMStackConfigurationClient/util"
 	"io/ioutil"
 	"net/http"
 	"sync"
-)
-
-var (
-	passphrase = "Utm.Pwd-53cr3t.5t4k!_3mpTy*"
 )
 
 type UTMConfigClient struct {
@@ -69,7 +64,6 @@ func (s *UTMConfigClient) doRequest(req *http.Request) ([]byte, error) {
 func (s *UTMConfigClient) CreateUTMConfig(config *types.ConfigurationSection) error {
 	url := fmt.Sprintf(util.RegisterConfigURL, s.MasterLocation)
 	fmt.Println(url)
-	config = encryptDecryptConfValues(config, "decrypt")
 	j, err := json.Marshal(config)
 	if err != nil {
 		return err
@@ -78,15 +72,12 @@ func (s *UTMConfigClient) CreateUTMConfig(config *types.ConfigurationSection) er
 	if err != nil {
 		return err
 	}
-	if config != nil {
-
-	}
 	_, err = s.doRequest(req)
 	return err
 }
 
-func (s *UTMConfigClient) GetUTMConfig(serverId int, module enum.UTMModule) (*types.ConfigurationSection, error) {
-	url := fmt.Sprintf(util.GetConfigURL, s.MasterLocation, serverId, module)
+func (s *UTMConfigClient) GetUTMConfig(module enum.UTMModule) (*types.ConfigurationSection, error) {
+	url := fmt.Sprintf(util.GetConfigURL, s.MasterLocation, module)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
@@ -100,21 +91,5 @@ func (s *UTMConfigClient) GetUTMConfig(serverId int, module enum.UTMModule) (*ty
 	if err != nil {
 		return nil, err
 	}
-	dat := encryptDecryptConfValues(&data, "decrypt")
-	return dat, nil
-}
-
-func encryptDecryptConfValues(utmConfig *types.ConfigurationSection, action string) *types.ConfigurationSection {
-	for _, confGroup := range utmConfig.ConfigurationGroups {
-		for _, conf := range confGroup.Configurations {
-			if conf.ConfValue != "" && conf.ConfDataType == enum.PasswordType {
-				if action != "encrypt" {
-					conf.ConfValue, _ = AtlasInsideAES.AESDecrypt(conf.ConfValue, []byte(passphrase))
-				} else {
-					conf.ConfValue, _ = AtlasInsideAES.AESEncrypt(conf.ConfValue, []byte(passphrase))
-				}
-			}
-		}
-	}
-	return utmConfig
+	return &data, nil
 }

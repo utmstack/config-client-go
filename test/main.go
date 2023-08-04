@@ -7,8 +7,8 @@ import (
 )
 
 func main() {
-	client := UTMStackConfigurationClient.NewUTMClient("90415H8um7Q3V7pOnpGZQQWDw2gimoUO", "qa.utmstack.com")
-	config, err := client.GetUTMConfig(1, enum.O365)
+	client := UTMStackConfigurationClient.NewUTMClient("EliHR1ZjPsaVdwg4CNI0X7c5QmCLOaJR", "192.168.1.59")
+	config, err := client.GetUTMConfig(enum.O365)
 	if err != nil {
 		fmt.Sprintf("Error s%", err.Error())
 	}
