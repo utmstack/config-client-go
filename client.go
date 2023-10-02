@@ -5,12 +5,13 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
-	"github.com/AtlasInsideCorp/UTMStackConfigurationClient/enum"
-	"github.com/AtlasInsideCorp/UTMStackConfigurationClient/types"
-	"github.com/AtlasInsideCorp/UTMStackConfigurationClient/util"
 	"io/ioutil"
 	"net/http"
 	"sync"
+
+	"github.com/utmstack/config-client-go/enum"
+	"github.com/utmstack/config-client-go/types"
+	"github.com/utmstack/config-client-go/util"
 )
 
 type UTMConfigClient struct {
