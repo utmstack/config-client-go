@@ -1,6 +1,6 @@
 package types
 
-import "github.com/AtlasInsideCorp/UTMStackConfigurationClient/enum"
+import "github.com/utmstack/config-client-go/enum"
 
 type ConfigurationSection struct {
 	ID                  int           `json:"id"`
