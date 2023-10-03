@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/AtlasInsideCorp/UTMStackConfigurationClient"
-	"github.com/AtlasInsideCorp/UTMStackConfigurationClient/enum"
+	UTMStackConfigurationClient "github.com/utmstack/config-client-go"
+	"github.com/utmstack/config-client-go/enum"
 	"os"
 )
 
