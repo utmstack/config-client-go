@@ -8,7 +8,7 @@ import (
 	"github.com/utmstack/config-client-go/enum"
 	"github.com/utmstack/config-client-go/types"
 	"github.com/utmstack/config-client-go/util"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"sync"
 )
@@ -50,8 +50,13 @@ func (s *UTMConfigClient) doRequest(req *http.Request) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	defer func() {
+		err = resp.Body.Close()
+		if err != nil {
+			fmt.Printf("error closing body: %v", err)
+		}
+	}()
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
