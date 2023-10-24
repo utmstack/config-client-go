@@ -94,3 +94,27 @@ func (s *UTMConfigClient) GetUTMConfig(module enum.UTMModule) (*types.Configurat
 	}
 	return &data, nil
 }
+
+func (s *UTMConfigClient) GetAllUTMConfig() ([]*types.ConfigurationSection, error) {
+	confs := []*types.ConfigurationSection{}
+
+	for _, module := range enum.AllV10Integrations {
+		url := fmt.Sprintf(util.GetConfigURL, s.MasterLocation, module)
+		req, err := http.NewRequest("GET", url, nil)
+		if err != nil {
+			return nil, err
+		}
+		response, err := s.doRequest(req)
+		if err != nil {
+			return nil, err
+		}
+		var data types.ConfigurationSection
+		err = json.Unmarshal(response, &data)
+		if err != nil {
+			return nil, err
+		}
+		confs = append(confs, &data)
+	}
+
+	return confs, nil
+}
