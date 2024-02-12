@@ -54,7 +54,7 @@ func (s *UTMConfigClient) doRequest(req *http.Request) ([]byte, error) {
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("body: %s; header: %s", body, resp.Header.Get("X-UtmStack-error"))
+		return nil, fmt.Errorf("status: %d; body: %s; header: %s",resp.StatusCode, body, resp.Header.Get("X-UtmStack-error"))
 	}
 
 	return body, nil
