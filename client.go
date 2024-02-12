@@ -1,4 +1,4 @@
-package UTMStackConfigurationClient
+package utmconfig
 
 import (
 	"bytes"
