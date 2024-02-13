@@ -48,6 +48,7 @@ var AllV10Integrations = []UTMModule{
 	DECEPTIVE_BYTES,
 	GITHUB,
 	BITDEFENDER,
+	SOCAI,
 }
 
 const (
@@ -116,4 +117,5 @@ const (
 	SALESFORCE                   = "SALESFORCE"
 	BITDEFENDER                  = "BITDEFENDER"
 	IBM_AS_400                   = "IBM_AS_400"
+	SOCAI                        = "SOC_AI"
 )
