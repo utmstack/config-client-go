@@ -25,7 +25,7 @@ var one sync.Once
 
 func NewUTMClient(connectionKey, masterLocation string) *UTMConfigClient {
 	one.Do(func() {
-		fmt.Println("Creating UTMConfigClient instance")
+		// fmt.Println("Creating UTMConfigClient instance")
 		utmClient = &UTMConfigClient{
 			ConnectionKey:  connectionKey,
 			MasterLocation: masterLocation,
@@ -54,7 +54,7 @@ func (s *UTMConfigClient) doRequest(req *http.Request) ([]byte, error) {
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("status: %d; body: %s; header: %s",resp.StatusCode, body, resp.Header.Get("X-UtmStack-error"))
+		return nil, fmt.Errorf("status: %d; body: %s; header: %s", resp.StatusCode, body, resp.Header.Get("X-UtmStack-error"))
 	}
 
 	return body, nil
@@ -62,7 +62,7 @@ func (s *UTMConfigClient) doRequest(req *http.Request) ([]byte, error) {
 
 func (s *UTMConfigClient) CreateUTMConfig(config *types.ConfigurationSection) error {
 	url := fmt.Sprintf(util.RegisterConfigURL, s.MasterLocation)
-	
+
 	j, err := json.Marshal(config)
 	if err != nil {
 		return err
@@ -74,13 +74,13 @@ func (s *UTMConfigClient) CreateUTMConfig(config *types.ConfigurationSection) er
 	}
 
 	_, err = s.doRequest(req)
-	
+
 	return err
 }
 
 func (s *UTMConfigClient) GetUTMConfig(module enum.UTMModule) (*types.ConfigurationSection, error) {
 	url := fmt.Sprintf(util.GetConfigURL, s.MasterLocation, module)
-	
+
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
@@ -92,7 +92,7 @@ func (s *UTMConfigClient) GetUTMConfig(module enum.UTMModule) (*types.Configurat
 	}
 
 	var data types.ConfigurationSection
-	
+
 	err = json.Unmarshal(response, &data)
 	if err != nil {
 		return nil, err
@@ -106,24 +106,24 @@ func (s *UTMConfigClient) GetAllUTMConfig() ([]*types.ConfigurationSection, erro
 
 	for _, module := range enum.AllV10Integrations {
 		url := fmt.Sprintf(util.GetConfigURL, s.MasterLocation, module)
-		
+
 		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {
 			return nil, err
 		}
-		
+
 		response, err := s.doRequest(req)
 		if err != nil {
 			return nil, err
 		}
-		
+
 		var data types.ConfigurationSection
-		
+
 		err = json.Unmarshal(response, &data)
 		if err != nil {
 			return nil, err
 		}
-		
+
 		confs = append(confs, &data)
 	}
 
