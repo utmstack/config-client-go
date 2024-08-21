@@ -23,6 +23,7 @@ type ModuleGroup struct {
 	GroupName        string          `json:"groupName"`
 	GroupDescription string          `json:"groupDescription"`
 	Configurations   []Configuration `json:"moduleGroupConfigurations"`
+	CollectorID      string          `json:"collector"`
 }
 
 type Configuration struct {
