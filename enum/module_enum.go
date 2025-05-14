@@ -52,6 +52,7 @@ var AllV10Integrations = []UTMModule{
 	FORTIWEB,
 	AIX,
 	IBM_AS_400,
+	INSECUREWEB,
 }
 
 const (
@@ -104,4 +105,5 @@ const (
 	FORTIWEB        UTMModule = "FORTIWEB"
 	AIX             UTMModule = "AIX"
 	IBM_AS_400      UTMModule = "AS_400"
+	INSECUREWEB     UTMModule = "INSECUREWEB"
 )
